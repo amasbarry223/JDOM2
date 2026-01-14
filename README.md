@@ -1,140 +1,145 @@
-# 🚀 Welcome to Z.ai Code Scaffold
+# 🚀 JDOM2 - Jeux de Données Ouverts du Mali
 
-A modern, production-ready web application scaffold powered by cutting-edge technologies, designed to accelerate your development with [Z.ai](https://chat.z.ai)'s AI-powered coding assistance.
+Plateforme de gestion de données ouvertes pour le Mali. Application frontend-only avec architecture moderne et optimisée.
 
-## ✨ Technology Stack
+## ✨ Stack Technologique
 
-This scaffold provides a robust foundation built with:
+L'application utilise:
 
-### 🎯 Core Framework
-- **⚡ Next.js 15** - The React framework for production with App Router
-- **📘 TypeScript 5** - Type-safe JavaScript for better developer experience
-- **🎨 Tailwind CSS 4** - Utility-first CSS framework for rapid UI development
+### 🎯 Framework Principal
+- **⚡ Next.js 15** - Framework React avec App Router
+- **📘 TypeScript 5** - JavaScript typé pour une meilleure expérience développeur
+- **🎨 Tailwind CSS 4** - Framework CSS utility-first
 
-### 🧩 UI Components & Styling
-- **🧩 shadcn/ui** - High-quality, accessible components built on Radix UI
-- **🎯 Lucide React** - Beautiful & consistent icon library
-- **🌈 Framer Motion** - Production-ready motion library for React
-- **🎨 Next Themes** - Perfect dark mode in 2 lines of code
+### 🧩 Composants UI
+- **🧩 shadcn/ui** - Composants accessibles basés sur Radix UI
+- **🎯 Lucide React** - Bibliothèque d'icônes
+- **📋 React Hook Form** - Formulaires performants
+- **✅ Zod** - Validation de schémas TypeScript-first
 
-### 📋 Forms & Validation
-- **🎣 React Hook Form** - Performant forms with easy validation
-- **✅ Zod** - TypeScript-first schema validation
+### 🔄 Gestion d'État
+- **🐻 Zustand** - State management simple et scalable
+- **💾 Mock Data** - Gestion de données frontend-only avec localStorage
+- **🔐 Mock Authentication** - Système d'authentification côté client
 
-### 🔄 State Management & Data Fetching
-- **🐻 Zustand** - Simple, scalable state management
-- **🔄 TanStack Query** - Powerful data synchronization for React
-- **🌐 Fetch** - Promise-based HTTP request
+### 📊 Visualisation
+- **📊 Recharts** - Bibliothèque de graphiques React
 
-### 💾 Data & Authentication
-- **💾 Mock Data** - Frontend-only data management with localStorage
-- **🔐 Mock Authentication** - Client-side authentication system
+## 🎯 Caractéristiques
 
-### 🎨 Advanced UI Features
-- **📊 TanStack Table** - Headless UI for building tables and datagrids
-- **🖱️ DND Kit** - Modern drag and drop toolkit for React
-- **📊 Recharts** - Redefined chart library built with React and D3
-- **🖼️ Sharp** - High performance image processing
+- **🏗️ Architecture Moderne** - Structure layered avec séparation des responsabilités
+- **🎨 UI Moderne** - Composants shadcn/ui avec interactions avancées
+- **🔒 Type Safety** - TypeScript strict avec validation Zod
+- **📱 Responsive** - Design mobile-first
+- **💾 Mock Data** - Gestion de données frontend-only avec localStorage
+- **🔐 Authentification Mock** - Système d'authentification côté client
+- **📊 Visualisation** - Graphiques et tableaux interactifs
+- **🚀 Production Ready** - Build optimisé et prêt pour le déploiement
+- **🧩 Maintenable** - Code organisé et documenté
 
-### 🌍 Internationalization & Utilities
-- **🌍 Next Intl** - Internationalization library for Next.js
-- **📅 Date-fns** - Modern JavaScript date utility library
-- **🪝 ReactUse** - Collection of essential React hooks for modern development
-
-## 🎯 Why This Scaffold?
-
-- **🏎️ Fast Development** - Pre-configured tooling and best practices
-- **🎨 Beautiful UI** - Complete shadcn/ui component library with advanced interactions
-- **🔒 Type Safety** - Full TypeScript configuration with Zod validation
-- **📱 Responsive** - Mobile-first design principles with smooth animations
-- **💾 Mock Data Ready** - Frontend-only data management with localStorage
-- **🔐 Mock Auth Included** - Client-side authentication system
-- **📊 Data Visualization** - Charts, tables, and drag-and-drop functionality
-- **🌍 i18n Ready** - Multi-language support with Next Intl
-- **🚀 Production Ready** - Optimized build and deployment settings
-- **🤖 AI-Friendly** - Structured codebase perfect for AI assistance
-
-## 🚀 Quick Start
+## 🚀 Démarrage Rapide
 
 ```bash
-# Install dependencies
-bun install
+# Installer les dépendances
+npm install
 
-# Start development server
-bun run dev
+# Lancer le serveur de développement
+npm run dev
 
-# Build for production
-bun run build
+# Build pour la production
+npm run build
 
-# Start production server
-bun start
+# Lancer le serveur de production
+npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see your application running.
+Ouvrez [http://localhost:3000](http://localhost:3000) pour voir l'application.
 
-## 🤖 Powered by Z.ai
+## 📁 Structure du Projet
 
-This scaffold is optimized for use with [Z.ai](https://chat.z.ai) - your AI assistant for:
+Voir [ARCHITECTURE.md](./ARCHITECTURE.md) pour une description détaillée de l'architecture.
 
-- **💻 Code Generation** - Generate components, pages, and features instantly
-- **🎨 UI Development** - Create beautiful interfaces with AI assistance  
-- **🔧 Bug Fixing** - Identify and resolve issues with intelligent suggestions
-- **📝 Documentation** - Auto-generate comprehensive documentation
-- **🚀 Optimization** - Performance improvements and best practices
+## 🏗️ Architecture
 
-Ready to build something amazing? Start chatting with Z.ai at [chat.z.ai](https://chat.z.ai) and experience the future of AI-powered development!
+L'application suit une architecture layered avec:
 
-## 📁 Project Structure
+- **Pages**: Composants minces qui orchestrent les vues
+- **Composants**: UI réutilisable et composable
+- **Hooks**: Logique métier réutilisable
+- **Stores**: État global avec Zustand
+- **Services**: Couche d'abstraction API
+- **Types**: Types TypeScript stricts
+- **Validation**: Schémas Zod pour la validation
+
+Voir [ARCHITECTURE.md](./ARCHITECTURE.md) pour plus de détails.
+
+## 📁 Structure du Projet
 
 ```
 src/
-├── app/                 # Next.js App Router pages
-├── components/          # Reusable React components
-│   └── ui/             # shadcn/ui components
-├── hooks/              # Custom React hooks
-└── lib/                # Utility functions and configurations
+├── app/                    # Pages Next.js (App Router)
+│   ├── (dashboard)/        # Route group dashboard
+│   ├── login/             # Page de connexion
+│   └── register/          # Page d'inscription
+├── components/             # Composants React
+│   ├── ui/                # Composants shadcn/ui
+│   ├── layout/            # Composants de layout
+│   ├── dashboard/         # Composants dashboard
+│   ├── datasets/          # Composants datasets
+│   └── ...                # Autres composants
+├── hooks/                 # Hooks personnalisés
+├── store/                 # Stores Zustand
+├── services/              # Services métier
+└── lib/                   # Utilitaires et config
 ```
 
-## 🎨 Available Features & Components
+## 🎨 Fonctionnalités
 
-This scaffold includes a comprehensive set of modern web development tools:
+### 📊 Gestion de Données
+- **Datasets**: CRUD complet pour les jeux de données
+- **Utilisateurs**: Gestion des utilisateurs avec rôles
+- **Organisations**: Gestion des organisations productrices
+- **Thèmes**: Catégorisation des datasets
+- **Licences**: Gestion des licences d'utilisation
 
-### 🧩 UI Components (shadcn/ui)
-- **Layout**: Card, Separator, Aspect Ratio, Resizable Panels
-- **Forms**: Input, Textarea, Select, Checkbox, Radio Group, Switch
-- **Feedback**: Alert, Toast (Sonner), Progress, Skeleton
-- **Navigation**: Breadcrumb, Menubar, Navigation Menu, Pagination
-- **Overlay**: Dialog, Sheet, Popover, Tooltip, Hover Card
-- **Data Display**: Badge, Avatar, Calendar
+### 🔐 Authentification
+- Authentification mock avec localStorage
+- Gestion de sessions
+- Rôles: admin, contributor, public
 
-### 📊 Advanced Data Features
-- **Tables**: Powerful data tables with sorting, filtering, pagination (TanStack Table)
-- **Charts**: Beautiful visualizations with Recharts
-- **Forms**: Type-safe forms with React Hook Form + Zod validation
+### 📈 Analytics
+- Statistiques de la plateforme
+- Graphiques de visualisation
+- Métriques de performance
 
-### 🎨 Interactive Features
-- **Animations**: Smooth micro-interactions with Framer Motion
-- **Drag & Drop**: Modern drag-and-drop functionality with DND Kit
-- **Theme Switching**: Built-in dark/light mode support
+### ⚙️ Paramètres
+- Configuration de la plateforme
+- Paramètres de sécurité
+- Configuration API
+- Gestion des notifications
 
-### 💾 Frontend Data Management
-- **Authentication**: Client-side mock authentication with localStorage
-- **Data Storage**: Mock data management with localStorage persistence
-- **State Management**: Simple and scalable with React hooks
+## 🛠️ Développement
 
-### 🌍 Production Features
-- **Internationalization**: Multi-language support with Next Intl
-- **Image Optimization**: Automatic image processing with Sharp
-- **Type Safety**: End-to-end TypeScript with Zod validation
-- **Essential Hooks**: 100+ useful React hooks with ReactUse for common patterns
+### Scripts Disponibles
 
-## 🤝 Get Started with Z.ai
+```bash
+npm run dev      # Serveur de développement
+npm run build    # Build de production
+npm run start    # Serveur de production
+npm run lint     # Linter ESLint
+```
 
-1. **Clone this scaffold** to jumpstart your project
-2. **Visit [chat.z.ai](https://chat.z.ai)** to access your AI coding assistant
-3. **Start building** with intelligent code generation and assistance
-4. **Deploy with confidence** using the production-ready setup
+## 📝 Documentation
+
+- [ARCHITECTURE.md](./ARCHITECTURE.md) - Architecture détaillée
+
+## 🚀 Déploiement
+
+L'application est prête pour le déploiement sur:
+- Vercel (recommandé pour Next.js)
+- Netlify
+- Tout hébergeur Node.js
 
 ---
 
-Built with ❤️ for the developer community. Supercharged by [Z.ai](https://chat.z.ai) 🚀
+Développé avec ❤️ pour le Mali 🇲🇱

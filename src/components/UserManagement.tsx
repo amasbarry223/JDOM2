@@ -601,14 +601,17 @@ export default function UserManagement() {
                     variant="outline"
                     className="w-full"
                     onClick={() => {
-                      setSelectedUser({
+                      // Create a temporary user object for viewing permissions
+                      const tempUser: EnhancedUser = {
                         id: role.key,
                         name: role.name,
                         email: '',
-                        role: role.key as any,
+                        role: role.key as 'admin' | 'contributor' | 'public',
+                        organization: '',
                         createdAt: '',
                         permissions: role.permissions.map(p => p.key)
-                      } as any)
+                      }
+                      setSelectedUser(tempUser)
                       setViewPermissionsModalOpen(true)
                     }}
                   >

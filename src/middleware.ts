@@ -5,7 +5,7 @@ import type { NextRequest } from 'next/server'
 const AUTHENTICATED_ROUTES = ['/dashboard'] as const
 
 // Public routes (no authentication required)
-const PUBLIC_ROUTES = ['/login', '/register', '/forgot-password', '/test-auth'] as const
+const PUBLIC_ROUTES = ['/login', '/register', '/forgot-password'] as const
 
 /**
  * Check if a path is protected

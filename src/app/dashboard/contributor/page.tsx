@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   Database,
@@ -65,35 +65,49 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useToast } from '@/hooks/use-toast'
-
-interface Dataset {
-  id: string
-  title: string
-  shortDescription: string
-  format: string
-  status: 'draft' | 'submitted' | 'approved' | 'rejected' | 'published'
-  publicationDate: string
-  updateFrequency: string
-  producer: string
-  theme: string
-  license: string
-  version: number
-  lastUpdated: string
-  downloadsCount: number
-  viewsCount: number
-}
-
-interface Organization {
-  id: string
-  name: string
-  description: string
-  datasetsCount: number
-  pendingCount: number
-}
+import { logger } from '@/lib/utils/logger'
+import { useDatasetStore } from '@/store/datasetStore'
+import { useOrganizationStore } from '@/store/organizationStore'
+import { useThemeStore } from '@/store/themeStore'
+import { useLicenseStore } from '@/store/licenseStore'
+import { useInitializeStores } from '@/hooks/useInitializeStores'
+import type { Dataset } from '@/lib/types'
 
 export default function ContributorDashboard() {
   const router = useRouter()
   const { toast } = useToast()
+
+  // Initialize stores
+  useInitializeStores()
+
+  // Get data from stores
+  const storeDatasets = useDatasetStore((state) => state.datasets)
+  const organizations = useOrganizationStore((state) => state.organizations)
+  const themes = useThemeStore((state) => state.themes)
+  const licenses = useLicenseStore((state) => state.licenses)
+
+  // Create lookup maps for efficient access
+  const themeMap = useMemo(() => {
+    return new Map(themes.map((t) => [t.id, t.name]))
+  }, [themes])
+
+  const organizationMap = useMemo(() => {
+    return new Map(organizations.map((o) => [o.id, o.name]))
+  }, [organizations])
+
+  const licenseMap = useMemo(() => {
+    return new Map(licenses.map((l) => [l.id, l.name]))
+  }, [licenses])
+
+  // Transform datasets to include resolved names for display
+  const datasets = useMemo(() => {
+    return storeDatasets.map((d) => ({
+      ...d,
+      theme: d.themeId ? themeMap.get(d.themeId) || '' : '',
+      producer: d.producerId ? organizationMap.get(d.producerId) || '' : '',
+      license: d.licenseId ? licenseMap.get(d.licenseId) || '' : '',
+    }))
+  }, [storeDatasets, themeMap, organizationMap, licenseMap])
 
   // Authentication check
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
@@ -111,114 +125,6 @@ export default function ContributorDashboard() {
   const [previewModalOpen, setPreviewModalOpen] = useState(false)
   const [selectedDataset, setSelectedDataset] = useState<Dataset | null>(null)
 
-  // Mock data
-  const [datasets] = useState<Dataset[]>([
-    {
-      id: '1',
-      title: 'Statistiques démographiques 2024',
-      shortDescription: 'Données démographiques détaillées par région',
-      format: 'CSV',
-      status: 'published',
-      publicationDate: '2024-01-15',
-      updateFrequency: 'Annuelle',
-      producer: 'INSTAT',
-      theme: 'Démographie',
-      license: 'ODbL',
-      version: 2,
-      lastUpdated: '2024-01-15',
-      downloadsCount: 1250,
-      viewsCount: 5432
-    },
-    {
-      id: '2',
-      title: 'Infrastructures de santé',
-      shortDescription: 'Localisation et caractéristiques des centres de santé',
-      format: 'JSON',
-      status: 'published',
-      publicationDate: '2024-02-01',
-      updateFrequency: 'Mensuelle',
-      producer: 'Ministère de la Santé',
-      theme: 'Santé',
-      license: 'CC-BY 4.0',
-      version: 1,
-      lastUpdated: '2024-02-01',
-      downloadsCount: 892,
-      viewsCount: 3210
-    },
-    {
-      id: '3',
-      title: 'Indicateurs économiques régionaux Q1',
-      shortDescription: 'PIB, emploi et commerce par région - 1er trimestre 2024',
-      format: 'CSV',
-      status: 'submitted',
-      publicationDate: '',
-      updateFrequency: 'Trimestrielle',
-      producer: 'Ministère de l\'Économie',
-      theme: 'Économie',
-      license: 'ODbL',
-      version: 1,
-      lastUpdated: '2024-03-01',
-      downloadsCount: 0,
-      viewsCount: 0
-    },
-    {
-      id: '4',
-      title: 'Établissements scolaires - Mise à jour',
-      shortDescription: 'Données mises à jour avec les nouvelles écoles',
-      format: 'JSON',
-      status: 'draft',
-      publicationDate: '',
-      updateFrequency: 'Annuelle',
-      producer: 'Ministère de l\'Éducation',
-      theme: 'Éducation',
-      license: 'CC-BY 4.0',
-      version: 3,
-      lastUpdated: '2024-03-05',
-      downloadsCount: 0,
-      viewsCount: 0
-    },
-    {
-      id: '5',
-      title: 'Qualité de l\'air 2024',
-      shortDescription: 'Mesures de pollution atmosphérique dans les grandes villes',
-      format: 'CSV',
-      status: 'rejected',
-      publicationDate: '',
-      updateFrequency: 'Quotidienne',
-      producer: 'Ministère de l\'Environnement',
-      theme: 'Environnement',
-      license: 'CC0',
-      version: 1,
-      lastUpdated: '2024-02-20',
-      downloadsCount: 0,
-      viewsCount: 0
-    }
-  ])
-
-  const [organizations] = useState<Organization[]>([
-    {
-      id: '1',
-      name: 'INSTAT',
-      description: 'Institut National de la Statistique du Mali',
-      datasetsCount: 15,
-      pendingCount: 2
-    },
-    {
-      id: '2',
-      name: 'Ministère de la Santé',
-      description: 'Ministère de la Santé et de l\'Hygiène Publique',
-      datasetsCount: 12,
-      pendingCount: 1
-    },
-    {
-      id: '3',
-      name: 'Ministère de l\'Économie',
-      description: 'Ministère de l\'Économie et des Finances',
-      datasetsCount: 8,
-      pendingCount: 3
-    }
-  ])
-
   // Check authentication on mount
   useEffect(() => {
     const checkAuth = async () => {
@@ -235,7 +141,7 @@ export default function ContributorDashboard() {
           router.push(`/login?redirect=${encodeURIComponent(currentPath)}`)
         }
       } catch (error) {
-        console.error('Auth check error:', error)
+        logger.error('Auth check error', error)
         setIsAuthenticated(false)
         router.push('/login')
       } finally {
@@ -306,7 +212,7 @@ export default function ContributorDashboard() {
         window.location.href = '/login'
       }, 500)
     } catch (error) {
-      console.error('Logout: Error caught:', error)
+      logger.error('Logout error', error)
 
       toast({
         title: 'Erreur',
@@ -342,14 +248,16 @@ export default function ContributorDashboard() {
     }
   }
 
-  const filteredDatasets = datasets.filter(dataset => {
-    const matchesSearch = searchTerm === '' ||
-      dataset.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      dataset.shortDescription.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesStatus = statusFilter === 'all' || dataset.status === statusFilter
-    const matchesTheme = themeFilter === 'all' || dataset.theme === themeFilter
-    return matchesSearch && matchesStatus && matchesTheme
-  })
+  const filteredDatasets = useMemo(() => {
+    return datasets.filter(dataset => {
+      const matchesSearch = searchTerm === '' ||
+        dataset.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (dataset.shortDescription || '').toLowerCase().includes(searchTerm.toLowerCase())
+      const matchesStatus = statusFilter === 'all' || dataset.status === statusFilter
+      const matchesTheme = themeFilter === 'all' || dataset.theme === themeFilter
+      return matchesSearch && matchesStatus && matchesTheme
+    })
+  }, [datasets, searchTerm, statusFilter, themeFilter])
 
   // Show loading state while checking authentication
   if (isLoadingAuth || isAuthenticated === null) {
@@ -657,38 +565,31 @@ function DatasetForm({
   onSubmit: (data: any) => void
   onCancel: () => void
 }) {
+  // Get themes, licenses, and organizations from stores
+  const themes = useThemeStore((state) => state.themes)
+  const licenses = useLicenseStore((state) => state.licenses)
+  const organizations = useOrganizationStore((state) => state.organizations)
+
   const [formData, setFormData] = useState({
     title: dataset?.title || '',
     shortDescription: dataset?.shortDescription || '',
     description: dataset?.description || '',
     format: dataset?.format || 'CSV',
-    theme: dataset?.theme || '',
-    producer: dataset?.producer || '',
-    license: dataset?.license || 'ODbL',
+    themeId: dataset?.themeId || '',
+    producerId: dataset?.producerId || '',
+    licenseId: dataset?.licenseId || '',
     updateFrequency: dataset?.updateFrequency || 'Annuelle',
-    spatialCoverage: '',
-    temporalCoverage: '',
-    keywords: ''
+    spatialCoverage: dataset?.spatialCoverage || '',
+    temporalCoverage: dataset?.temporalCoverage || '',
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const themes = [
-    { id: '1', name: 'Démographie' },
-    { id: '2', name: 'Santé' },
-    { id: '3', name: 'Économie' },
-    { id: '4', name: 'Éducation' },
-    { id: '5', name: 'Environnement' },
-    { id: '6', name: 'Transport' },
-    { id: '7', name: 'Infrastructure' }
-  ]
-
-  const licenses = [
-    { id: '1', name: 'ODbL', description: 'Open Database License' },
-    { id: '2', name: 'CC-BY 4.0', description: 'Creative Commons Attribution 4.0' },
-    { id: '3', name: 'CC0', description: 'Creative Commons Zero (Public Domain)' }
-  ]
+  // Get themes and licenses from stores
+  const themes = useThemeStore((state) => state.themes)
+  const licenses = useLicenseStore((state) => state.licenses)
+  const organizations = useOrganizationStore((state) => state.organizations)
 
   const validate = () => {
     const newErrors: Record<string, string> = {}
@@ -701,12 +602,16 @@ function DatasetForm({
       newErrors.shortDescription = 'La description courte est requise'
     }
 
-    if (!formData.theme) {
-      newErrors.theme = 'Le thème est requis'
+    if (!formData.themeId) {
+      newErrors.themeId = 'Le thème est requis'
     }
 
-    if (!formData.producer) {
-      newErrors.producer = 'Le producteur est requis'
+    if (!formData.producerId) {
+      newErrors.producerId = 'Le producteur est requis'
+    }
+
+    if (!formData.licenseId) {
+      newErrors.licenseId = 'La licence est requise'
     }
 
     setErrors(newErrors)
@@ -801,54 +706,63 @@ function DatasetForm({
       <div className="space-y-2">
         <Label htmlFor="theme">Thème *</Label>
         <Select
-          value={formData.theme}
-          onValueChange={(value) => setFormData({ ...formData, theme: value })}
+          value={formData.themeId}
+          onValueChange={(value) => setFormData({ ...formData, themeId: value })}
         >
-          <SelectTrigger id="theme" className={errors.theme ? 'border-destructive' : ''}>
+          <SelectTrigger id="theme" className={errors.themeId ? 'border-destructive' : ''}>
             <SelectValue placeholder="Sélectionner un thème" />
           </SelectTrigger>
           <SelectContent>
             {themes.map(theme => (
-              <SelectItem key={theme.id} value={theme.name}>{theme.name}</SelectItem>
+              <SelectItem key={theme.id} value={theme.id}>{theme.name}</SelectItem>
             ))}
           </SelectContent>
         </Select>
-        {errors.theme && (
-          <p className="text-sm text-destructive">{errors.theme}</p>
+        {errors.themeId && (
+          <p className="text-sm text-destructive">{errors.themeId}</p>
         )}
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="producer">Producteur *</Label>
-        <Input
-          id="producer"
-          value={formData.producer}
-          onChange={(e) => setFormData({ ...formData, producer: e.target.value })}
-          placeholder="Organisation productrice"
-          className={errors.producer ? 'border-destructive' : ''}
-        />
-        {errors.producer && (
-          <p className="text-sm text-destructive">{errors.producer}</p>
+        <Select
+          value={formData.producerId}
+          onValueChange={(value) => setFormData({ ...formData, producerId: value })}
+        >
+          <SelectTrigger id="producer" className={errors.producerId ? 'border-destructive' : ''}>
+            <SelectValue placeholder="Sélectionner une organisation" />
+          </SelectTrigger>
+          <SelectContent>
+            {organizations.map(org => (
+              <SelectItem key={org.id} value={org.id}>{org.name}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        {errors.producerId && (
+          <p className="text-sm text-destructive">{errors.producerId}</p>
         )}
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="license">Licence *</Label>
         <Select
-          value={formData.license}
-          onValueChange={(value) => setFormData({ ...formData, license: value })}
+          value={formData.licenseId}
+          onValueChange={(value) => setFormData({ ...formData, licenseId: value })}
         >
-          <SelectTrigger id="license">
-            <SelectValue />
+          <SelectTrigger id="license" className={errors.licenseId ? 'border-destructive' : ''}>
+            <SelectValue placeholder="Sélectionner une licence" />
           </SelectTrigger>
           <SelectContent>
             {licenses.map(license => (
-              <SelectItem key={license.id} value={license.name}>
+              <SelectItem key={license.id} value={license.id}>
                 {license.name} - {license.description}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
+        {errors.licenseId && (
+          <p className="text-sm text-destructive">{errors.licenseId}</p>
+        )}
       </div>
 
       <div className="space-y-2">

@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { useToast } from '@/hooks/use-toast'
 import { mockRegister } from '@/lib/mock/auth'
+import { logger } from '@/lib/utils/logger'
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -104,7 +105,8 @@ export default function RegisterPage() {
     } catch (err) {
       setError('Erreur lors de la création du compte. Veuillez réessayer.')
       setIsLoading(false)
-      console.error('Registration error:', err)
+      // Error is already handled by toast notification
+      logger.error('Registration error', err)
     }
   }
 

@@ -9,6 +9,8 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { useToast } from '@/hooks/use-toast'
 import { mockLogin } from '@/lib/mock/auth'
+import { ROUTES } from '@/lib/utils/constants'
+import { logger } from '@/lib/utils/logger'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -90,17 +92,18 @@ export default function LoginPage() {
 
         // Redirect based on role
         if (result.user!.role === 'admin') {
-          router.push('/dashboard')
+          router.push(ROUTES.DASHBOARD)
         } else if (result.user!.role === 'contributor') {
           router.push('/dashboard/contributor')
         } else {
-          router.push('/')
+          router.push(ROUTES.DASHBOARD)
         }
       }, 500)
     } catch (err) {
       setError('Erreur de connexion. Veuillez réessayer.')
       setIsLoading(false)
-      console.error('Login error:', err)
+      // Error is already handled by toast notification
+      logger.error('Login error', err)
     }
   }
 

@@ -3,6 +3,7 @@
  */
 
 import { loadMockData, saveMockData, type MockUser } from './data'
+import { generateId } from '@/lib/utils/id'
 
 const SESSION_KEY = 'mock_session'
 const USER_KEY = 'mock_current_user'
@@ -166,7 +167,7 @@ export async function mockRegister(
 
   // Create new user
   const newUser: MockUser = {
-    id: Date.now().toString(),
+    id: generateId(),
     email: email.toLowerCase(),
     name,
     role,
